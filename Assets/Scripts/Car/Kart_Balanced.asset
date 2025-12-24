@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce330ae1b4aff634e88d0fecb935ba2f, type: 3}
+  m_Name: Kart_Balanced
+  m_EditorClassIdentifier: Assembly-CSharp::KartTuning
+  maxSpeed: 120
+  acceleration: 30
+  deceleration: 20
+  turnStrength: 180
+  driftTurnMultiplier: 1.4
+  airControl: 0.4
+  gravityBoost: 30
+  uprightStrength: 10
+  centerOfMassY: -0.5
