@@ -7,10 +7,12 @@ public class KartController : MonoBehaviour
     public KartTuning tuning;
 
     Rigidbody rb;
+    KartPowerupActions powerups; // reads CurrentSpeedMultiplier from your powerup script
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        powerups = GetComponent<KartPowerupActions>();
 
         if (tuning != null)
             rb.centerOfMass = new Vector3(0, tuning.centerOfMassY, 0);
@@ -21,11 +23,14 @@ public class KartController : MonoBehaviour
         var input = InputManager.Instance;
         if (input == null || tuning == null) return;
 
+        // multiplier from powerups (Boost)
+        float mult = powerups != null ? powerups.CurrentSpeedMultiplier : 1f;
+
         Vector3 velocity = rb.linearVelocity;
         Vector3 forward = transform.forward;
 
         float speed = velocity.magnitude;
-        float maxSpeedMs = tuning.maxSpeed / 3.6f;
+        float maxSpeedMs = (tuning.maxSpeed * mult) / 3.6f;
 
         // --------------------
         // ACCELERATION
@@ -35,7 +40,7 @@ public class KartController : MonoBehaviour
             velocity +=
                 forward *
                 input.Throttle *
-                tuning.acceleration *
+                (tuning.acceleration * mult) *
                 Time.fixedDeltaTime;
         }
         else
@@ -66,9 +71,7 @@ public class KartController : MonoBehaviour
 
             velocity = Quaternion.Euler(0f, turn, 0f) * velocity;
 
-            rb.MoveRotation(
-                rb.rotation * Quaternion.Euler(0f, turn, 0f)
-            );
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, turn, 0f));
         }
 
         rb.linearVelocity = velocity;
@@ -78,8 +81,7 @@ public class KartController : MonoBehaviour
         // --------------------
         rb.AddForce(Vector3.down * tuning.gravityBoost, ForceMode.Acceleration);
 
-        Quaternion upright =
-            Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        Quaternion upright = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
 
         rb.MoveRotation(
             Quaternion.Slerp(
